@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  ocr_py:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ocr_py:latest
+    container_name: ocr_py
+    ports:
+      - "8808:8808"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8808
+      - OCR_LANG=ch
+      - LOG_LEVEL=INFO
+      - MAX_UPLOAD_SIZE=52428800
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8808/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
